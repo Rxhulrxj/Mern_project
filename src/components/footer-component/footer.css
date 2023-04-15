@@ -1,0 +1,120 @@
+.footer-main-container {
+  background-color: var(--black-color);
+  height: 45vh;
+  /* bottom: 0;
+  position: sticky; */
+  /* left: 0; */
+  width: 100%;
+  border-radius: 30px 30px 0px 0px;
+  -moz-border-radius: 30px 30px 0px 0px;
+  -webkit-border-radius: 30px 30px 0px 0px;
+}
+
+.footer-component {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  border-radius: 30px 30px 0px 0px;
+  -moz-border-radius: 30px 30px 0px 0px;
+  -webkit-border-radius: 30px 30px 0px 0px;
+  width: 100%;
+}
+.footer-buy-section {
+  margin-left: 0.5rem;
+}
+.footer-section-1 {
+  display: flex;
+  flex-direction: row;
+  width: 50%;
+}
+.footer-section-1 > img {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: -70px;
+}
+
+.divider {
+  display: inline-block;
+  align-self: stretch;
+  width: 5px;
+  background-color: grey;
+  opacity: 1;
+  border-radius: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+.getStartedbtn {
+  background-color: var(--btn_colr);
+  height: 40px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 15px;
+  width: 220px;
+}
+.hr {
+  display: none;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 0;
+  height: 0;
+  width: 200px;
+  border-bottom: 5px solid grey;
+}
+.footer-section-2 {
+  color: white;
+}
+.hr-contact {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 0;
+  height: 0;
+  border-bottom: 2px solid grey;
+}
+.contact-number-footer {
+  font-weight: 700;
+}
+.contact-number-footer > a {
+  color: white;
+  text-decoration: none;
+  margin-left: 10px;
+}
+.copyright-section > p {
+  color: grey;
+  text-align: center;
+}
+.divider-height {
+  height: 200px;
+}
+@media screen and (max-width: 600px) {
+  .footer-main-container {
+    height: 100vh;
+  }
+  .footer-component {
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+    color: white;
+    width: 100%;
+  }
+  .divider-height {
+    height: 50px;
+  }
+  .footer-section-1 {
+    flex-direction: column;
+  }
+  .footer-buy-section {
+    margin-left: 0;
+    margin-top: -40px;
+  }
+  .footer-section-1 > img {
+    margin-top: -80px;
+    margin-left: -30px;
+  }
+  .divider {
+    display: none;
+  }
+  .hr {
+    display: block;
+  }
+}

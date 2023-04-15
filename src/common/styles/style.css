@@ -1,0 +1,79 @@
+:root {
+  --btn_colr: #ffa800;
+  --black-color: #121212;
+}
+.box-shadow {
+  -webkit-box-shadow: 10px 13px 5px 0px rgba(0, 0, 0, 0.37);
+  -moz-box-shadow: 10px 13px 5px 0px rgba(0, 0, 0, 0.37);
+  box-shadow: 10px 13px 5px 0px rgba(0, 0, 0, 0.37);
+}
+
+.btn-404 {
+  background-color: var(--btn_colr);
+  border-radius: 10px;
+  width: 150px;
+  font-weight: 600;
+}
+.btn-404:hover {
+  background-color: var(--btn_colr);
+}
+.slide-class {
+  height: 300px;
+}
+
+h1 {
+  font-family: "inter";
+}
+.yellow {
+  color: #ffa800;
+}
+h5 {
+  font-family: "inter";
+}
+.main {
+  width: 50%;
+  margin: 50px auto;
+}
+
+/* Bootstrap 4 text input with search icon */
+
+.has-search .form-control {
+  padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  width: 2.375rem;
+  height: 2.375rem;
+  line-height: 2.375rem;
+  text-align: center;
+  pointer-events: none;
+  color: #aaa;
+}
+.vl {
+  border-left: 6px solid white;
+  height: 500px;
+}
+.container-carlist .card {
+  background-color: #1e1e1e;
+  color: black;
+}
+
+.c {
+  padding: 10px;
+  background-color: #dfdfdf;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding-right: 10px;
+  margin: auto;
+  width: 150px;
+}
+.container-carlist {
+  margin-left: 13%;
+}
+
+.color-white {
+  color: white;
+}

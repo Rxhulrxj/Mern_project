@@ -1,0 +1,19 @@
+.login-main-container {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* height: 80vh; */
+  padding: 50px;
+}
+.login-btn {
+  background-color: var(--btn_colr);
+  border-radius: 10px;
+}
+
+@media screen and (max-width: 600px) {
+  .login-main-container {
+    width: 80%;
+    /* height: 90vh; */
+  }
+}

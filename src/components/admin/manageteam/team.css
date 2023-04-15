@@ -1,0 +1,46 @@
+@media (min-width: 1025px) {
+  .h-custom {
+    height: 100vh !important;
+  }
+}
+.card-registration .select-input.form-control[readonly]:not([disabled]) {
+  font-size: 1rem;
+  line-height: 2.15;
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+}
+.card-registration .select-arrow {
+  top: 13px;
+}
+.card1 {
+  border: 0px;
+}
+.bg-indigo {
+  background-color: #4835d4;
+}
+@media (min-width: 992px) {
+  .card-registration-2 .bg-indigo,
+  #exampleTextarea {
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+  }
+}
+@media (max-width: 991px) {
+  .card-registration-2 .bg-indigo,
+  #exampleTextarea {
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+  }
+}
+.form-control-lg {
+  /* min-height: calc(0.5em + (-1rem + 8px)); */
+  min-height: calc(-4.5em + (-1rem + 25px));
+  padding: -3.5rem 1rem;
+  font-size: 1.25rem;
+  border-radius: 1.1rem;
+  height: 39px;
+}
