@@ -1,5 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { baseapiurl } from "../../../common/api";
+import moment from "moment";
 
 function Sellerdetail() {
   const location = useLocation();
@@ -37,7 +39,7 @@ function Sellerdetail() {
                         type="text"
                         className="form-control form-control-lg"
                         id="fullName"
-                        value={data.Full_Name}
+                        value={data.full_Name}
                         disabled
                       />
                     </div>
@@ -48,7 +50,7 @@ function Sellerdetail() {
                         type="tel"
                         className="form-control form-control-lg"
                         id="phoneNumber"
-                        value={data.Phone_number}
+                        value={data.phoneNumber}
                         disabled
                       />
                     </div>
@@ -59,7 +61,7 @@ function Sellerdetail() {
                         className="form-control form-control-lg"
                         id="address"
                         rows="4"
-                        value={data.Address}
+                        value={data.address}
                         disabled
                       ></textarea>
                     </div>
@@ -73,7 +75,7 @@ function Sellerdetail() {
                         type="email"
                         className="form-control form-control-lg"
                         id="email"
-                        value={data.Email_address}
+                        value={data.email}
                         disabled
                       />
                     </div>
@@ -84,7 +86,7 @@ function Sellerdetail() {
                         type="tel"
                         className="form-control form-control-lg"
                         id="Aadhar"
-                        value={data.aadhar_no}
+                        value={data.Aadhar}
                         disabled
                       />
                     </div>
@@ -95,7 +97,7 @@ function Sellerdetail() {
                         type="date"
                         className="form-control form-control-lg"
                         id="dtjoined"
-                        value={data.created_date}
+                        value={moment(data.created_date).format("YYYY-MM-DD")}
                         disabled
                       />
                     </div>
@@ -120,7 +122,7 @@ function Sellerdetail() {
                         type="text"
                         className="form-control form-control-lg"
                         id="bmName"
-                        value={data.manufacture_name}
+                        value={data.Manufacturename}
                         disabled
                       />
                     </div>
@@ -131,7 +133,7 @@ function Sellerdetail() {
                         type="text"
                         className="form-control form-control-lg"
                         id="modelyear"
-                        value={data.model_year}
+                        value={data.modelyear}
                         disabled
                       />
                     </div>
@@ -142,7 +144,7 @@ function Sellerdetail() {
                         type="text"
                         className="form-control form-control-lg"
                         id="engineNumber"
-                        value={data.Engine_number}
+                        value={data.engineNumber}
                         disabled
                       />
                     </div>
@@ -153,7 +155,7 @@ function Sellerdetail() {
                         type="text"
                         className="form-control form-control-lg"
                         id="ChasisNumber"
-                        value={data.chasis_number}
+                        value={data.ChasisNumber}
                         disabled
                       />
                     </div>
@@ -175,7 +177,7 @@ function Sellerdetail() {
                         type="date"
                         className="form-control form-control-lg"
                         id="taxvalid"
-                        value={data.tax_valid}
+                        value={data.taxvalid}
                         disabled
                       />
                     </div>
@@ -188,7 +190,7 @@ function Sellerdetail() {
                         className="form-select form-select-lg"
                         id="Extrafitting"
                         name="Extrafitting"
-                        value={data.extra_fittings}
+                        value={data.Extrafitting}
                         disabled
                       >
                         <option value="yes">Yes</option>
@@ -205,7 +207,7 @@ function Sellerdetail() {
                         type="text"
                         className="form-control form-control-lg"
                         id="ModelName"
-                        value={data.model_name}
+                        value={data.ModelName}
                         disabled
                       />
                     </div>
@@ -216,7 +218,7 @@ function Sellerdetail() {
                         type="tel"
                         className="form-control form-control-lg"
                         id="altPhoneNumber"
-                        value={data.Vehicle_color}
+                        value={data.vehicleColor}
                         disabled
                       />
                     </div>
@@ -227,7 +229,7 @@ function Sellerdetail() {
                         type="number"
                         className="form-control form-control-lg"
                         id="kmdriven"
-                        value={data.total_km_driven}
+                        value={data.kmdriven}
                         disabled
                       />
                     </div>
@@ -238,7 +240,7 @@ function Sellerdetail() {
                         type="text"
                         className="form-control form-control-lg"
                         id="fuelType"
-                        value={data.fuel_type}
+                        value={data.fuelType}
                         disabled
                       />
                     </div>
@@ -249,7 +251,7 @@ function Sellerdetail() {
                         type="text"
                         className="form-control form-control-lg"
                         id="vlocation"
-                        value={data.vehicle_location}
+                        value={data.vlocation}
                         disabled
                       />
                     </div>
@@ -271,7 +273,7 @@ function Sellerdetail() {
               <div className="row">
                 <div className="col-md-3 ">
                   <img
-                    src={data.front_view_image}
+                    src={baseapiurl+"/"+data.front_view}
                     className="card-img-bottom "
                     alt="front view"
                     title="front view"
@@ -280,7 +282,7 @@ function Sellerdetail() {
                 </div>
                 <div className="col-md-3 ">
                   <img
-                    src={data.rear_left_view_image}
+                    src={baseapiurl+"/"+ data.rear_left_view}
                     className="card-img-bottom "
                     alt="rear left view "
                     title="rear left view"
@@ -289,7 +291,7 @@ function Sellerdetail() {
                 </div>
                 <div className="col-md-3">
                   <img
-                    src={data.left_side_image}
+                    src={baseapiurl+"/"+ data.left_view}
                     className="card-img-bottom "
                     alt="left side"
                     title="left side"
@@ -298,7 +300,7 @@ function Sellerdetail() {
                 </div>
                 <div className="col-md-3">
                   <img
-                    src={data.rear_view_image}
+                    src={baseapiurl+"/"+ data.rear_view}
                     className="card-img-bottom "
                     alt="rear view"
                     title="rear view"
@@ -311,7 +313,7 @@ function Sellerdetail() {
               <div className="row snd">
                 <div className="offset-md-2 col-md-5">
                   <img
-                    src={data.rc_book_image}
+                    src={baseapiurl+"/"+ data.rc_book}
                     className="img"
                     alt="rc book"
                     title="rc book"
@@ -321,7 +323,7 @@ function Sellerdetail() {
                 </div>
                 <div className="col-md-5">
                   <img
-                    src={data.pucc_image}
+                    src={baseapiurl +"/"+ data.pucc_image}
                     className="img "
                     alt="pucc"
                     title="pucc"
@@ -346,7 +348,7 @@ function Sellerdetail() {
                         type="text"
                         className="form-control form-control-lg"
                         id="price"
-                        value={data.price_by_customer}
+                        value={data.price}
                         disabled
                       />
                     </div>
@@ -359,24 +361,13 @@ function Sellerdetail() {
                         type="text"
                         className="form-control form-control-lg"
                         id="price"
-                        value={data.assigned_to}
+                        value={data.employee_name}
                         disabled
                       />
                     </div>
                     <br />
-                    <div className="form-group">
-                      <label for="lpq" className="form-label">
-                        Latest Price Quote
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control form-control-lg"
-                        id="lpq"
-                        value={data.latest_price_quote}
-                        disabled
-                      />
-                    </div>
-                    <br />
+                    
+                    
                   </div>
 
                   <div className="col-md-5 p-5 ">
@@ -386,7 +377,7 @@ function Sellerdetail() {
                         className="form-control form-control-lg"
                         id="cmt"
                         rows="3"
-                        value={data.comments_by_customer}
+                        value={data.Comments}
                         disabled
                       ></textarea>
                     </div>
@@ -398,7 +389,7 @@ function Sellerdetail() {
                         className="form-control form-control-lg"
                         id="cmtm"
                         rows="3"
-                        value={data.comments_by_team}
+                        value={data.comments_employee}
                         disabled
                       ></textarea>
                     </div>
@@ -423,7 +414,7 @@ function Sellerdetail() {
                         className="form-select form-select-lg"
                         id="vi"
                         name="vi"
-                        value={data.vehicle_inspected}
+                        value={data.inspected_vehicle}
                         disabled
                       >
                         <option value="yes">Yes</option>
@@ -437,10 +428,10 @@ function Sellerdetail() {
                     <div className="form-group">
                       <label for="licenseNumber">Status</label>
                       <br />
-                      {data.status.toLowerCase() == "completed" ||
-                      data.status.toLowerCase() == "purchased" ? (
+                      {data.current_status.toLowerCase() == "completed" ||
+                      data.current_status.toLowerCase() == "purchased" ? (
                         <span className="btn text-bg-success">Purchased</span>
-                      ) : data.status.toLowerCase() == "cancelled" ? (
+                      ) : data.current_status.toLowerCase() == "cancelled" ? (
                         <span className="btn text-bg-danger">Cancelled</span>
                       ) : (
                         <span className="btn text-bg-info">Processing</span>

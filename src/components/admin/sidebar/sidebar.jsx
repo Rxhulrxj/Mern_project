@@ -1,7 +1,15 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "./sidebar.css";
+import { useDispatch } from "react-redux";
+import { deleteUserData } from "../../../reducers/reducer";
 function Sidebar() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const logout = () => {
+    dispatch(deleteUserData());
+    navigate('/')
+  };
   return (
     <div className="mask scroll--simple h-100 p-0" style={{ overflow: "auto" }}>
       <div className="m-0 p-0 ">
@@ -141,9 +149,9 @@ function Sidebar() {
                     aria-labelledby="dropdownMenuButton1"
                   >
                     <li>
-                      <a className="dropdown-item" href="#">
+                      <button className="dropdown-item" onClick={logout}>
                         Logout
-                      </a>
+                      </button>
                     </li>
                   </ul>
                 </div>

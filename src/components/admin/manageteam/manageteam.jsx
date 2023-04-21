@@ -1,9 +1,28 @@
 import React from "react";
-import { employees } from "../../../dummydata/datas";
+// import { employees } from "../../../dummydata/datas";
 import Moment from "react-moment";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { baseapiurl } from "../../../common/api";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "../../loader/loader";
+import { useSelector } from "react-redux";
 
 function Manageteam() {
+  const { userData } = useSelector((state) => state.MainApp);
+  const getEmployeeData = async () => {
+    const { data } = await axios.post(`${baseapiurl}/employee/get-employees`,{
+      token:userData.token
+    });
+    
+    return data;
+  };
+  const { data, error, isLoading } = useQuery(["getEmployee"], getEmployeeData, {
+    enabled: true,
+  });
+  
+  if (isLoading || error) return <Loader />;
+  
   return (
     <div className="admin-main-div">
       <div className="container mt-4 mb-2">
@@ -21,6 +40,8 @@ function Manageteam() {
 
       <div className="col-md-12">
         <div className="table-responsive">
+        {/* {console.log(Object.keys(employees).length === 0)} */}
+        {/* {employees !=undefined ? */}
           <table className="table table-bordered text-center mb-0 mt-2 ">
             <thead>
               <tr>
@@ -35,29 +56,31 @@ function Manageteam() {
               </tr>
             </thead>
             <tbody>
-              {employees.map((data, index) => (
-                <tr>
+              
+              {data && data.response.map((dat, index) => (
+                
+                <tr key={index}>
                   <th scope="row">{index + 1}</th>
-                  <td>{data.Full_Name}</td>
-                  <td>{data.role}</td>
-                  <td>{data.branch}</td>
-                  <td>{data.Email_address}</td>
-                  <td>{data.Phone_number}</td>
+                  <td>{dat.Full_Name}</td>
+                  <td>{dat.role}</td>
+                  <td>{dat.branch}</td>
+                  <td>{dat.Email_address}</td>
+                  <td>{dat.Phone_number}</td>
                   <td>
-                    <Moment format="YYYY/MM/DD">{data.created_date}</Moment>
+                    <Moment format="YYYY/MM/DD">{dat.created_date}</Moment>
                   </td>
                   <td>
                     <Link
-                      to={`/admin/team/edit/${data.user_id}`}
-                      state={data}
+                      to={`/admin/team/edit/${dat.user_id}`}
+                      state={dat}
                       type="button"
                       className="btn btn-primary me-2"
                     >
                       Edit
                     </Link>
                     <Link
-                      to={`/admin/team/${data.user_id}`}
-                      state={data}
+                      to={`/admin/team/${dat.user_id}`}
+                      state={dat}
                       type="button"
                       className="btn btn-warning"
                     >
@@ -68,6 +91,8 @@ function Manageteam() {
               ))}
             </tbody>
           </table>
+          {/* :<div className="text-center">
+                <span>No Employees Found</span></div>} */}
         </div>
       </div>
     </div>

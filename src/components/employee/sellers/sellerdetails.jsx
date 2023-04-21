@@ -1,9 +1,57 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { baseapiurl } from "../../../common/api";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
 
 function Sellerdetails() {
+  const [vehgood, setVehGood] = useState("");
+  const { userData } = useSelector((state) => state.MainApp);
+  const navigate = useNavigate();
   const location = useLocation();
   const data = location.state;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  useEffect(() => {
+    setVehGood(data.vehicle_ok);
+  }, []);
+
+  const onSubmit = async (data) => {
+    await updateselllead(data);
+  };
+  const updateselllead = async (datas) => {
+    let datastosend = {};
+    datastosend.token = userData.token;
+    datastosend.id = data.id;
+    datastosend.email = data.email;
+    datastosend.vehicle_ok = vehgood;
+
+    if (vehgood == "yes") {
+      datastosend.inspected_vehicle = datas.inspected_vehicle;
+      datastosend.inspected_vehicle_with_techinican =
+        datas.inspected_vehicle_with_techinican;
+      datastosend.comments_employee = "";
+    } else {
+      datastosend.comments_employee = datas.comments_employee;
+    }
+    axios
+      .post(baseapiurl + "/sellers/updateselllead", datastosend)
+      .then((res) => {
+        if (res.data.status) {
+          toast.success(res.data.response);
+          const myTimeout = setTimeout(navigate("/employee/sellers"), 5000);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.response.data.response);
+      });
+  };
+  console.log(data);
   return (
     <div className="admin-main-div">
       <div className="container-fluid">
@@ -28,76 +76,79 @@ function Sellerdetails() {
               <h5 className="card-title">
                 <u>Seller Personal Details</u>{" "}
               </h5>
-              <form>
-                <div className="row ">
-                  <div className="col-md-5 p-5 ">
-                    <div className="form-group">
-                      <label for="fullName">Full Name</label>
-                      <input
-                        type="text"
-                        className="form-control form-control-lg"
-                        id="fullName"
-                        placeholder="Enter your full name"
-                      />
-                    </div>
-                    <br />
-                    <div className="form-group">
-                      <label for="phoneNumber">Phone Number</label>
-                      <input
-                        type="tel"
-                        className="form-control form-control-lg"
-                        id="phoneNumber"
-                        placeholder="Enter your phone number"
-                      />
-                    </div>
-                    <br />
-                    <div className="form-group">
-                      <label for="address">Address</label>
-                      <textarea
-                        className="form-control form-control-lg"
-                        id="address"
-                        rows="3"
-                        placeholder="Enter your address"
-                      ></textarea>
-                    </div>
-                    <br />
+              <div className="row ">
+                <div className="col-md-5 p-5 ">
+                  <div className="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input
+                      type="text"
+                      value={data.full_Name}
+                      className="form-control form-control-lg"
+                      id="fullName"
+                      readOnly
+                    />
                   </div>
-
-                  <div className="col-md-5 p-5 ">
-                    <div className="form-group">
-                      <label for="email">Email</label>
-                      <input
-                        type="email"
-                        className="form-control form-control-lg"
-                        id="email"
-                        placeholder="Enter your email"
-                      />
-                    </div>
-                    <br />
-                    <div className="form-group">
-                      <label for="altPhoneNumber">
-                        Alternative Phone Number
-                      </label>
-                      <input
-                        type="tel"
-                        className="form-control form-control-lg"
-                        id="altPhoneNumber"
-                        placeholder="Enter your alternative phone number"
-                      />
-                    </div>
-                    <br />
-                    <div className="form-group">
-                      <label for="dtjoined">Date Joined</label>
-                      <input
-                        type="date"
-                        className="form-control form-control-lg"
-                        id="dtjoined"
-                      />
-                    </div>
-                    <br />
+                  <br />
+                  <div className="form-group">
+                    <label for="phoneNumber">Phone Number</label>
+                    <input
+                      type="tel"
+                      value={data.phoneNumber}
+                      className="form-control form-control-lg"
+                      id="phoneNumber"
+                      readOnly
+                    />
                   </div>
+                  <br />
+                  <div className="form-group">
+                    <label for="address">Address</label>
+                    <textarea
+                      className="form-control form-control-lg"
+                      id="address"
+                      value={data.address}
+                      rows="3"
+                      readOnly
+                    ></textarea>
+                  </div>
+                  <br />
                 </div>
-              </form>
+
+                <div className="col-md-5 p-5 ">
+                  <div className="form-group">
+                    <label for="email">Email</label>
+                    <input
+                      type="email"
+                      value={data.email}
+                      className="form-control form-control-lg"
+                      id="email"
+                      readOnly
+                    />
+                  </div>
+                  <br />
+                  <div className="form-group">
+                    <label for="aadharnumber">Aadhar Number</label>
+                    <input
+                      type="text"
+                      value={data.Aadhar}
+                      className="form-control form-control-lg"
+                      id="aadharnumber"
+                      readOnly
+                    />
+                  </div>
+                  <br />
+                  <div className="form-group">
+                    <label for="dtjoined">Date Sell lead Created</label>
+                    <input
+                      type="datetime-local"
+                      value={data.created_date}
+                      className="form-control form-control-lg"
+                      id="dtjoined"
+                      readOnly
+                    />
+                  </div>
+                  <br />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -115,7 +166,8 @@ function Sellerdetails() {
                       type="text"
                       className="form-control form-control-lg"
                       id="bmName"
-                      placeholder="Enter your Brand name"
+                      value={data.Manufacturename}
+                      readOnly
                     />
                   </div>
                   <br />
@@ -125,7 +177,8 @@ function Sellerdetails() {
                       type="text"
                       className="form-control form-control-lg"
                       id="modelyear"
-                      placeholder="Enter year of model"
+                      value={data.modelyear}
+                      readOnly
                     />
                   </div>
                   <br />
@@ -135,7 +188,8 @@ function Sellerdetails() {
                       type="text"
                       className="form-control form-control-lg"
                       id="engineNumber"
-                      placeholder="Enter year Engine Number"
+                      value={data.engineNumber}
+                      readOnly
                     />
                   </div>
                   <br />
@@ -145,7 +199,8 @@ function Sellerdetails() {
                       type="text"
                       className="form-control form-control-lg"
                       id="ChasisNumber"
-                      placeholder="Enter year Chasis Number"
+                      value={data.engineNumber}
+                      readOnly
                     />
                   </div>
                   <br />
@@ -155,7 +210,8 @@ function Sellerdetails() {
                       type="text"
                       className="form-control form-control-lg"
                       id="transmission"
-                      placeholder="Enter year transmission type"
+                      value={data.transmission}
+                      readOnly
                     />
                   </div>
                   <br />
@@ -165,6 +221,8 @@ function Sellerdetails() {
                       type="date"
                       className="form-control form-control-lg"
                       id="taxvalid"
+                      value={data.taxvalid}
+                      readOnly
                     />
                   </div>
                   <br />
@@ -177,7 +235,8 @@ function Sellerdetails() {
                       type="text"
                       className="form-control form-control-lg"
                       id="ModelName"
-                      placeholder="Enter your Model"
+                      value={data.ModelName}
+                      readOnly
                     />
                   </div>
                   <br />
@@ -187,7 +246,8 @@ function Sellerdetails() {
                       type="tel"
                       className="form-control form-control-lg"
                       id="altPhoneNumber"
-                      placeholder="Enter your alternative phone number"
+                      value={data.vehicleColor}
+                      readOnly
                     />
                   </div>
                   <br />
@@ -197,7 +257,8 @@ function Sellerdetails() {
                       type="number"
                       className="form-control form-control-lg"
                       id="kmdriven"
-                      placeholder="Total kilometers driven"
+                      value={data.kmdriven}
+                      readOnly
                     />
                   </div>
                   <br />
@@ -207,7 +268,8 @@ function Sellerdetails() {
                       type="text"
                       className="form-control form-control-lg"
                       id="fuelType"
-                      placeholder="Enter your Fuel type"
+                      value={data.fuelType}
+                      readOnly
                     />
                   </div>
                   <br />
@@ -217,7 +279,8 @@ function Sellerdetails() {
                       type="text"
                       className="form-control form-control-lg"
                       id="vlocation"
-                      placeholder="Enter Vehicle's Location"
+                      value={data.vlocation}
+                      readOnly
                     />
                   </div>
                   <br />
@@ -229,9 +292,11 @@ function Sellerdetails() {
                       className="form-select form-select-lg"
                       id="Extrafitting"
                       name="Extrafitting"
+                      value={data.Extrafitting}
+                      readOnly
                     >
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
                     </select>
                   </div>
                   <br />
@@ -241,7 +306,7 @@ function Sellerdetails() {
               <div className="row">
                 <div className="col-md-3 ">
                   <img
-                    src={data.front_view_image}
+                    src={baseapiurl + "/" + data.front_view}
                     className="card-img-bottom "
                     alt="front view"
                     title="front view"
@@ -250,7 +315,7 @@ function Sellerdetails() {
                 </div>
                 <div className="col-md-3 ">
                   <img
-                    src={data.rear_left_view_image}
+                    src={baseapiurl + "/" + data.rear_left_view}
                     className="card-img-bottom "
                     alt="rear left view "
                     title="rear left view"
@@ -259,7 +324,7 @@ function Sellerdetails() {
                 </div>
                 <div className="col-md-3">
                   <img
-                    src={data.left_side_image}
+                    src={baseapiurl + "/" + data.left_view}
                     className="card-img-bottom "
                     alt="left side"
                     title="left side"
@@ -268,7 +333,7 @@ function Sellerdetails() {
                 </div>
                 <div className="col-md-3">
                   <img
-                    src={data.rear_view_image}
+                    src={baseapiurl + "/" + data.rear_view}
                     className="card-img-bottom "
                     alt="rear view"
                     title="rear view"
@@ -281,7 +346,7 @@ function Sellerdetails() {
               <div className="row snd">
                 <div className="offset-md-2 col-md-5">
                   <img
-                    src={data.rc_book_image}
+                    src={baseapiurl + "/" + data.rc_book}
                     className="img"
                     alt="rc book"
                     title="rc book"
@@ -291,7 +356,7 @@ function Sellerdetails() {
                 </div>
                 <div className="col-md-5">
                   <img
-                    src={data.pucc_image}
+                    src={baseapiurl + "/" + data.pucc_image}
                     className="img "
                     alt="pucc"
                     title="pucc"
@@ -307,113 +372,174 @@ function Sellerdetails() {
               <h5 className="card-title">
                 <u>Vehicle Price Quote</u>{" "}
               </h5>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="row ">
+                  <div className="col-md-5 p-5 ">
+                    <div className="form-group">
+                      <label for="price">Price</label>
+                      <input
+                        type="text"
+                        className="form-control form-control-lg"
+                        id="price"
+                        value={data.price}
+                        readOnly
+                      />
+                    </div>
+                    <br />
+                    <div className="form-group">
+                      <label for="vassignedto" className="form-label">
+                        Vehicle Assigned to
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control form-control-lg"
+                        id="price"
+                        value={data.employee_name}
+                        readOnly
+                      />
+                    </div>
+                    <br />
+                    <div className="form-group">
+                      <label for="vgood" className="form-label">
+                        Is Vehicle good to buy?
+                      </label>
+                      <select
+                        className="form-select form-select-lg"
+                        id="vgood"
+                        value={vehgood}
+                        disabled={
+                          data.current_status == "Completed" ||
+                          data.current_status == "Purchased" ||
+                          data.current_status == "Cancelled"
+                            ? true
+                            : false
+                        }
+                        onChange={(e) => setVehGood(e.target.value)}
+                      >
+                        <option>Choose a option</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
+                    </div>
+                    <br />
+                    {vehgood == "yes" &&
+                    (vehgood != "" || vehgood != "Choose a option") ? (
+                      <div className="form-group">
+                        <label for="iv" className="form-label">
+                          Have you Inspected The Vehicle?
+                        </label>
+                        <select
+                          className="form-select form-select-lg"
+                          id="iv"
+                          {...register("inspected_vehicle", {
+                            required: "This field is required",
+                            disabled:
+                              data.current_status == "Completed" ||
+                              data.current_status == "Purchased" ||
+                              data.current_status == "Cancelled"
+                                ? true
+                                : false,
+                          })}
+                        >
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </select>
+                      </div>
+                    ) : null}
+                    <br />
+                  </div>
 
-              <div className="row ">
-                <div className="col-md-5 p-5 ">
-                  <div className="form-group">
-                    <label for="price">Price(customers)</label>
-                    <input
-                      type="text"
-                      className="form-control form-control-lg"
-                      id="price"
-                      placeholder="Price"
-                    />
+                  <div className="col-md-5 p-5 ">
+                    <div className="form-group">
+                      <label for="cmt">Comments(customers)</label>
+                      <textarea
+                        className="form-control form-control-lg"
+                        id="cmt"
+                        value={data.Comments}
+                        readOnly
+                      ></textarea>
+                    </div>
+                    <br />
+                    {vehgood == "yes" &&
+                    (vehgood != "" || vehgood != "Choose a option") ? (
+                      <div className="form-group">
+                        <label for="ivpipt" className="form-label">
+                          Have you inspected the Vehicle parts and the interior
+                          properly with the technician?
+                        </label>
+                        <select
+                          className="form-select form-select-lg"
+                          id="ivpipt"
+                          disabled={
+                            data.current_status == "Completed" ||
+                            data.current_status == "Purchased" ||
+                            data.current_status == "Cancelled"
+                              ? true
+                              : false
+                          }
+                          {...register("inspected_vehicle_with_techinican", {
+                            required: "This field is required",
+                          })}
+                        >
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </select>
+                      </div>
+                    ) : null}
+                    <br />
+                    <br />
+                    {vehgood == "no" &&
+                    (vehgood != "" || vehgood != "Choose a option") ? (
+                      <div className="form-group">
+                        <label for="cmtm">
+                          Comments(Explaination for the Cancellation)
+                        </label>
+                        <textarea
+                          className="form-control form-control-lg"
+                          id="cmtm"
+                          rows="3"
+                          {...register("comments_employee", {
+                            required: "This field is required",
+                            disabled:
+                              data.current_status == "Completed" ||
+                              data.current_status == "Purchased" ||
+                              data.current_status == "Cancelled"
+                                ? true
+                                : false,
+                          })}
+                        ></textarea>
+                      </div>
+                    ) : null}
+                    <br />
+                    <div className="form-group">
+                      {data.current_status == "Completed" ||
+                      data.current_status == "Purchased" ||
+                      data.current_status == "Cancelled" ? null : vehgood ==
+                          "no" &&
+                        (vehgood != "" || vehgood != "Choose a option") ? (
+                        <button className="btn text-bg-primary float-end">
+                          Update Vehicle
+                        </button>
+                      ) : null}
+                      {data.current_status == "Completed" ||
+                      data.current_status == "Purchased" ||
+                      data.current_status == "Cancelled" ? null : vehgood ==
+                          "yes" &&
+                        (vehgood != "" || vehgood != "Choose a option") ? (
+                        <button className="btn text-bg-success float-end">
+                          Buy Vehicle
+                        </button>
+                      ) : null}
+                    </div>
+                    <br />
                   </div>
-                  <br />
-                  <div className="form-group">
-                    <label for="vassignedto" className="form-label">
-                      Vehicle Assigned to
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control form-control-lg"
-                      id="price"
-                      placeholder="assigned to.."
-                    />
-                  </div>
-                  <br />
-                  <div className="form-group">
-                    <label for="iv" className="form-label">
-                      Have you Inspected The Vehicle?
-                    </label>
-                    <select
-                      className="form-select form-select-lg"
-                      id="iv"
-                      name="iv"
-                    >
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
-                    </select>
-                  </div>
-                  <br />
-                  <div className="form-group">
-                    <label for="lpq" className="form-label">
-                      Late Price Quote
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control form-control-lg"
-                      id="lpq"
-                      placeholder="latest price quote"
-                    />
-                  </div>
-                  <br />
                 </div>
-
-                <div className="col-md-5 p-5 ">
-                  <div className="form-group">
-                    <label for="cmt">Comments(customers)</label>
-                    <textarea
-                      className="form-control form-control-lg"
-                      id="cmt"
-                      rows="3"
-                      placeholder="Enter your Comments.."
-                    ></textarea>
-                  </div>
-                  <br />
-                  <div className="form-group">
-                    <label for="ivpipt" className="form-label">
-                      Have you inspected the Vehicle parts and the interior
-                      properly with the technician?
-                    </label>
-                    <select
-                      className="form-select form-select-lg"
-                      id="ivpipt"
-                      name="ivpipt"
-                    >
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
-                    </select>
-                  </div>
-                  <br />
-                  <br />
-                  <div className="form-group">
-                    <label for="cmtm">
-                      Comments(Explaination for the new price)
-                    </label>
-                    <textarea
-                      className="form-control form-control-lg"
-                      id="cmtm"
-                      rows="3"
-                      placeholder="Enter your Comments.."
-                    ></textarea>
-                  </div>
-                  <br />
-                  <div className="form-group">
-                    <button className="btn text-bg-primary float-end">
-                      Update Vehicle
-                    </button>
-                    <button className="btn text-bg-success float-end me-3">
-                      Buy Vehicle
-                    </button>
-                  </div>
-                  <br />
-                </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

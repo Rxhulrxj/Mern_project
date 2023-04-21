@@ -44,7 +44,7 @@ function Homepage() {
         <>
           <HeaderComponent userData={userData} />
           <Homepagesection1 branddata={branddata} modeldata={modeldata} />
-          <Homepagesection2 />
+          <Homepagesection2 topVehicles={topVehicles}/>
           <Homepagesection3 />
           <Footer />
         </>

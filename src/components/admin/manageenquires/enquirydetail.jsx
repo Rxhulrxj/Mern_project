@@ -28,7 +28,7 @@ function Enquirydetail() {
               <h5 className="card-title">
                 <u>Customer Personal Details</u>{" "}
               </h5>
-              <form>
+              
                 <div className="row ">
                   <div className="col-md-5 p-5 ">
                     <div className="form-group">
@@ -92,7 +92,7 @@ function Enquirydetail() {
                     <br />
                   </div>
                 </div>
-              </form>
+              
             </div>
           </div>
 
@@ -101,7 +101,7 @@ function Enquirydetail() {
               <h5 className="card-title">
                 <u>Vehicle Details</u>
               </h5>
-              <form>
+              
                 <div className="row ">
                   <div className="col-md-5 p-5 ">
                     <div className="form-group">
@@ -209,7 +209,7 @@ function Enquirydetail() {
                     <br />
                   </div>
                 </div>
-              </form>
+              
             </div>
           </div>
 
@@ -218,7 +218,7 @@ function Enquirydetail() {
               <h5 className="card-title">
                 <u>Status</u>
               </h5>
-              <form>
+            
                 <div className="row ">
                   <div className="col-md-5 p-5 ">
                     <div className="form-group">
@@ -227,7 +227,7 @@ function Enquirydetail() {
                         type="text"
                         className="form-control form-control-lg"
                         id="assignedTo"
-                        value={data.assigned_to}
+                        value={data.employee_name}
                         disabled
                       />
                     </div>
@@ -243,8 +243,8 @@ function Enquirydetail() {
                         value={data.slot_available}
                         disabled
                       >
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
                       </select>
                     </div>
                     <br />
@@ -268,7 +268,7 @@ function Enquirydetail() {
                         type="text"
                         className="form-control form-control-lg"
                         id="tdtSlot"
-                        value={data.test_drive_timeslot}
+                        value={data.Test_drive_timeslot}
                         disabled
                       />
                     </div>
@@ -276,8 +276,10 @@ function Enquirydetail() {
                     <div className="form-group">
                       <label for="licenseNumber">Status</label>
                       <br />
-                      {data.current_status.toLowerCase() == "purchased" ||
-                      data.current_status.toLowerCase() == "completed" ? (
+                      {data.Current_Status.toLowerCase() == "completed" ? <button className="btn text-bg-success me-3">
+                            Completed
+                          </button>:
+                      data.Current_Status.toLowerCase() == "completed(processing)" ? (
                         <>
                           <button className="btn text-bg-success me-3">
                             Completed
@@ -286,7 +288,7 @@ function Enquirydetail() {
                             Purchased
                           </button>
                         </>
-                      ) : data.current_status.toLowerCase() == "processing" ? (
+                      ) : data.Current_Status.toLowerCase() == "processing" ? (
                         <button className="btn text-bg-info">Processing</button>
                       ) : (
                         <button className="btn text-bg-danger">
@@ -297,7 +299,7 @@ function Enquirydetail() {
                     <br />
                   </div>
                 </div>
-              </form>
+             
             </div>
           </div>
         </div>

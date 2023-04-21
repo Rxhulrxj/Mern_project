@@ -1,9 +1,31 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 function Homepagesection1({ branddata, modeldata }) {
+  const [selectedbrand, setSelectedBrand] = useState("");
+  const [selectedModel, setSelectedModel] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
   const year = new Date().getFullYear();
+  const navigator = useNavigate();
   const years = Array.from(new Array(10), (val, index) => year - index);
+  const searchnow = () => {
+    if (selectedbrand == "") {
+      toast.error("Please choose a Brand");
+    } else if (selectedYear == "") {
+      toast.error("Please choose a Year");
+    } else if (selectedModel == "") {
+      toast.error("Please choose a Model");
+    } else {
+      navigator("/customsearchedcarlist", {
+        state: [{
+          selectedbrand: selectedbrand,
+          selectedModel: selectedModel,
+          selectedYear: selectedYear,
+        }],
+      });
+    }
+  };
   return (
     <div className="homepage-section1-main-container">
       <div className="section1-first">
@@ -20,39 +42,61 @@ function Homepagesection1({ branddata, modeldata }) {
             YOU WANT,<span style={{ color: "#ffa800" }}>YOUR WAY</span>
           </h2>
           <div className="d-flex select-section">
-            <select className="form-select">
-              <option disabled defaultValue selected>
-                Brand
-              </option>
-              {branddata.map((e, index) => (
-                <option key={index} value={e.manufacture_name}>
-                  {e.manufacture_name}
+            <div className="col-md-4 me-3">
+              <select
+                className="form-select"
+                onChange={(e) => setSelectedBrand(e.target.value)}
+              >
+                <option disabled defaultValue selected>
+                  Brand
                 </option>
-              ))}
-            </select>
-            <select className="form-select">
-              <option defaultValue disabled selected>
-                Model
-              </option>
-              {modeldata.map((e, index) => (
-                <option key={index} value={e.model_name}>
-                  {e.model_name}
-                </option>
-              ))}
-            </select>
-            <select className="form-select">
-              {years.map((year, index) => {
-                return (
-                  <option key={`year${index}`} value={year}>
-                    {year}
+                {branddata.map((e, index) => (
+                  <option key={index} value={e.manufacture_name}>
+                    {e.manufacture_name}
                   </option>
-                );
-              })}
-            </select>
+                ))}
+              </select>
+            </div>
+            <div className="col-md-4 me-3">
+              <select
+                className="form-select"
+                onChange={(e) => setSelectedModel(e.target.value)}
+              >
+                <option defaultValue disabled selected>
+                  Model
+                </option>
+                {selectedbrand != "" &&
+                  modeldata.map((e, index) =>
+                    e.manufacture_name == selectedbrand ? (
+                      <option key={index} value={e.model_name}>
+                        {e.model_name}
+                      </option>
+                    ) : null
+                  )}
+              </select>
+            </div>
+            <div className="col-md-4">
+              <select
+                className="form-select"
+                onChange={(e) => setSelectedYear(e.target.value)}
+              >
+                <option defaultValue disabled selected>
+                  Year
+                </option>
+                {selectedbrand != "" &&
+                  years.map((year, index) => {
+                    return (
+                      <option key={`year${index}`} value={year}>
+                        {year}
+                      </option>
+                    );
+                  })}
+              </select>
+            </div>
           </div>
           <div>
-            <button className="search-btn">
-              <span>100 Cars Listed</span>{" "}
+            <button className="search-btn" onClick={searchnow}>
+              <span>Search your Desired Vehicle</span>
               <span className="searchtext">
                 <span>search Now</span>
                 <img src="right-arrow.png" alt="searchicon" width="30" />
@@ -64,11 +108,12 @@ function Homepagesection1({ branddata, modeldata }) {
               Wanted to search more customized?
               <Link to="carlist" style={{ color: "#ffa800" }}>
                 Advanced Search
-              </Link>{" "}
+              </Link>
             </p>
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

@@ -119,13 +119,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 10px;
 }
-.carsec-viewallbtn > button {
+#viewallbtn {
   background-color: var(--btn_colr);
   border-radius: 10px;
   font-size: 20px;
   font-weight: 700;
+  color: black;
+  text-decoration: none;
+  padding: 10px;
 }
 .homepagesec3maincontainer {
   margin-top: 100px;

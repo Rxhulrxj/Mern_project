@@ -1,37 +1,115 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import axios from "axios";
 import { baseapiurl } from "../../../common/api";
 import { useSelector } from "react-redux";
+import moment from "moment";
 function Addcar({ edit }) {
+  let navigate = useNavigate();
+  const year = new Date().getFullYear();
+  const location = useLocation();
+  const data = location.state;
+  const years = Array.from(new Array(10), (val, index) => year - index);
   const { userData } = useSelector((state) => state.MainApp);
   const {
     register,
     handleSubmit,
-    watch,
+    
     formState: { errors },
   } = useForm();
-  const onSubmit = (datas) => {
+  const onSubmit = async (datas) => {
     datas.token = userData.token;
-    console.log(datas);
-    addvehicle(datas);
-  };
-  const location = useLocation();
-  const data = location.state;
-
-  const addvehicle = async (data) => {
-    const formData = new FormData();
-    for (const [key, value] of Object.entries(data)) {
-      formData.append(key, value);
+    // console.log(datas);
+    // console.log("data");
+    if (edit) {
+      if (datas.front_view_image.length == 0) {
+        datas.front_view_image = data.front_view_image;
+      } else {
+        datas.front_view_image = datas.front_view_image[0];
+      }
+      if (datas.left_side_image.length == 0) {
+        datas.left_side_image = data.left_side_image;
+      } else {
+        datas.left_side_image = datas.left_side_image[0];
+      }
+      if (datas.pucc_image.length == 0) {
+        datas.pucc_image = data.pucc_image;
+      } else {
+        datas.pucc_image = datas.pucc_image[0];
+      }
+      if (datas.rear_left_view_image.length == 0) {
+        datas.rear_left_view_image = data.rear_left_view_image;
+      } else {
+        datas.rear_left_view_image = datas.rear_left_view_image[0];
+      }
+      if (datas.rear_view_image.length == 0) {
+        datas.rear_view_image = data.rear_view_image;
+      } else {
+        datas.rear_view_image = datas.rear_view_image[0];
+      }
+      if (datas.thumbnail.length == 0) {
+        console.log("in length 0");
+        datas.thumbnail = data.thumbnail;
+      } else {
+        console.log(datas.thumbnail[0]);
+        datas.thumbnail = datas.thumbnail[0];
+      }
+      if (datas.rc_book_image.length == 0) {
+        datas.rc_book_image = data.rc_book_image;
+      } else {
+        datas.rc_book_image = datas.rc_book_image[0];
+      }
     }
+
+    const formData = new FormData();
+    for (const [key, value] of Object.entries(datas)) {
+      if (
+        key == "front_view_image" ||
+        key == "rear_left_view_image" ||
+        key == "rear_view_image" ||
+        key == "pucc_image" ||
+        key == "thumbnail" ||
+        key == "rc_book_image" ||
+        key == "left_side_image"
+      ) {
+        if (edit) {
+          formData.append(key, value);
+          // console.log(key);
+        } else {
+          formData.append(key, value[0]);
+        }
+      } else if (key == "model_year") {
+        formData.append(key, moment(value).format("YYYY"));
+      } else {
+        formData.append(key, value);
+      }
+    }
+    // console.log(datas);
+    // console.log("datas");
+    edit ? await updatevehicle(formData) : await addvehicle(formData);
+  };
+
+  // console.log(data);
+
+  const addvehicle = async (formData) => {
     var response = await axios.post(
       `${baseapiurl}/vehicle/add-vehicle`,
-      formData,
-      { headers: { "Content-Type": "multipart/form-data" } }
+      formData
     );
-    console.log(response);
+    if (response.data.status) {
+      return navigate("/admin/managecars");
+    }
+  };
+  const updatevehicle = async (formData) => {
+    var response = await axios.post(
+      `${baseapiurl}/vehicle/updatevehicle/${data.id}`,
+      formData
+    );
+    if(response.data.status){
+      return navigate("/admin/managecars");
+    }
   };
 
   return (
@@ -65,6 +143,7 @@ function Addcar({ edit }) {
             onSubmit={handleSubmit(onSubmit)}
             className="needs-validation"
             noValidate
+            encType="multipart/form-data"
           >
             <div className="row">
               <div className="col-md-5 p-5">
@@ -83,31 +162,23 @@ function Addcar({ edit }) {
                 <br />
                 <div className="form-group">
                   <label htmlFor="modelyear">Model Year</label>
-                  <input
-                    type="month"
-                    className="form-control"
+                  <select
+                    className="form-select"
                     id="modelyear"
                     defaultValue={edit ? data.model_year : ""}
                     {...register("model_year", {
                       required: "Model Year is required",
                     })}
-                  />
-                  {/* <Datetime
-                    dateFormat="YYYY"
-                    timeFormat={false}
-                    {...register("model_year", {
-                      required: "Model Year is required",
+                  >
+                    <option disabled>Choose a Petrol Type</option>
+                    {years.map((year) => {
+                      return (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      );
                     })}
-                    initialValue={edit ? data.model_year : ""}
-                  /> 
-                  // <DatePicker
-                  //   selected={startDate}
-                  //   onChange={(date) => setStartDate(date)}
-                  //   showYearPicker
-                  //   endDate={new Date()}
-                  //   dateFormat="yyyy"
-                  //   withPortal={true}
-                  // />*/}
+                  </select>
                 </div>
                 <br />
                 <div className="form-group">
@@ -125,7 +196,7 @@ function Addcar({ edit }) {
                 </div>
                 <br />
                 <div className="form-group">
-                  <label for="fuelType" className="form-label">
+                  <label htmlFor="fuelType" className="form-label">
                     Fuel Type
                   </label>
                   <select
@@ -146,7 +217,7 @@ function Addcar({ edit }) {
                 </div>
                 <br />
                 <div className="form-group">
-                  <label for="extra_fittings" className="form-label">
+                  <label htmlFor="extra_fittings" className="form-label">
                     Extra Fittings
                   </label>
                   <select
@@ -163,7 +234,7 @@ function Addcar({ edit }) {
                 <br />
 
                 <div className="form-group">
-                  <label for="tkmDriven">Total K/M Driven</label>
+                  <label htmlFor="tkmDriven">Total K/M Driven</label>
                   <input
                     type="text"
                     className="form-control"
@@ -176,7 +247,7 @@ function Addcar({ edit }) {
                 </div>
                 <br />
                 <div className="form-group">
-                  <label for="Published" className="form-label">
+                  <label htmlFor="Published" className="form-label">
                     Published
                   </label>
                   <select
@@ -193,7 +264,7 @@ function Addcar({ edit }) {
                 <br />
 
                 <div className="form-group">
-                  <label for="Description">Description</label>
+                  <label htmlFor="Description">Description</label>
                   <textarea
                     className="form-control"
                     id="Description"
@@ -208,13 +279,13 @@ function Addcar({ edit }) {
                   {edit ? (
                     <div className="mb-4 d-flex justify-content-center">
                       <img
-                        src={data.left_side_image}
+                        src={baseapiurl + "/" + data.left_side_image}
                         alt="example placeholder"
                         style={{ width: "300px" }}
                       />
                     </div>
                   ) : null}
-                  <label for="lsview" className="form-label">
+                  <label htmlFor="lsview" className="form-label">
                     Left Side View
                   </label>
                   <input
@@ -222,8 +293,8 @@ function Addcar({ edit }) {
                     type="file"
                     id="lsview"
                     accept="image/*"
-                    {...register("leftsideview", {
-                      required: "Left Side Image is required",
+                    {...register("left_side_image", {
+                      required: edit ? false : "Left Side Image is required",
                     })}
                   />
                 </div>
@@ -233,13 +304,13 @@ function Addcar({ edit }) {
                   {edit ? (
                     <div className="mb-4 d-flex justify-content-center">
                       <img
-                        src={data.rc_book_image}
+                        src={baseapiurl + "/" + data.rc_book_image}
                         alt="example placeholder"
                         style={{ width: "300px" }}
                       />
                     </div>
                   ) : null}
-                  <label for="rcbook" className="form-label">
+                  <label htmlFor="rcbook" className="form-label">
                     Rc Book Image
                   </label>
                   <input
@@ -247,8 +318,8 @@ function Addcar({ edit }) {
                     type="file"
                     id="rcbook"
                     accept="image/*"
-                    {...register("rcbook", {
-                      required: "Rc Book Image is required",
+                    {...register("rc_book_image", {
+                      required: edit ? false : "Rc Book Image is required",
                     })}
                   />
                 </div>
@@ -257,22 +328,22 @@ function Addcar({ edit }) {
                   {edit ? (
                     <div className="mb-4 d-flex justify-content-center">
                       <img
-                        src={data.thumbnail}
+                        src={baseapiurl + "/" + data.thumbnail}
                         alt="example placeholder"
                         style={{ width: "300px" }}
                       />
                     </div>
                   ) : null}
-                  <label for="thumbnail" className="form-label">
+                  <label htmlFor="thumbn" className="form-label">
                     Thumbnail
                   </label>
                   <input
                     className="form-control"
                     type="file"
                     accept="image/*"
-                    id="thumbnail"
+                    id="thumbn"
                     {...register("thumbnail", {
-                      required: "Thumbnail Image is required",
+                      required: edit ? false : "Thumbnail Image is required",
                     })}
                   />
                 </div>
@@ -280,7 +351,7 @@ function Addcar({ edit }) {
 
               <div className="col-md-5 p-5">
                 <div className="form-group">
-                  <label for="ModelName">Model Name</label>
+                  <label htmlFor="ModelName">Model Name</label>
                   <input
                     type="text"
                     className="form-control"
@@ -293,7 +364,7 @@ function Addcar({ edit }) {
                 </div>
                 <br />
                 <div className="form-group">
-                  <label for="vehicleColor">vehicle Color</label>
+                  <label htmlFor="vehicleColor">vehicle Color</label>
                   <input
                     type="text"
                     className="form-control"
@@ -306,7 +377,7 @@ function Addcar({ edit }) {
                 </div>
                 <br />
                 <div className="form-group">
-                  <label for="ChasisNumber">Chasis Number</label>
+                  <label htmlFor="ChasisNumber">Chasis Number</label>
                   <input
                     type="text"
                     className="form-control"
@@ -320,7 +391,7 @@ function Addcar({ edit }) {
                 </div>
                 <br />
                 <div className="form-group">
-                  <label for="transmission" className="form-label">
+                  <label htmlFor="transmission" className="form-label">
                     Transmission
                   </label>
                   <select
@@ -337,7 +408,7 @@ function Addcar({ edit }) {
                 </div>
                 <br />
                 <div className="form-group">
-                  <label for="txvdate">Tax Valid Upto</label>
+                  <label htmlFor="txvdate">Tax Valid Upto</label>
                   <input
                     type="date"
                     className="form-control"
@@ -350,7 +421,7 @@ function Addcar({ edit }) {
                 </div>
                 <br />
                 <div className="form-group">
-                  <label for="vrnumber">Vehicle Register Number</label>
+                  <label htmlFor="vrnumber">Vehicle Register Number</label>
                   <input
                     type="text"
                     className="form-control"
@@ -363,7 +434,7 @@ function Addcar({ edit }) {
                 </div>
                 <br />
                 <div className="form-group">
-                  <label for="sold" className="form-label">
+                  <label htmlFor="sold" className="form-label">
                     Sold
                   </label>
                   <select
@@ -378,16 +449,31 @@ function Addcar({ edit }) {
                 </div>
                 <br />
                 <div className="form-group">
+                  <label htmlFor="price" className="form-label">
+                    Price
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="price"
+                    defaultValue={edit ? data.price : ""}
+                    {...register("price", {
+                      required: "Price is required",
+                    })}
+                  />
+                </div>
+                <br />
+                <div className="form-group">
                   {edit ? (
                     <div className="mb-4 d-flex justify-content-center">
                       <img
-                        src={data.front_view_image}
+                        src={baseapiurl + "/" + data.front_view_image}
                         alt="example placeholder"
                         style={{ width: "300px" }}
                       />
                     </div>
                   ) : null}
-                  <label for="fvimg" className="form-label">
+                  <label htmlFor="fvimg" className="form-label">
                     Front View Image
                   </label>
                   <input
@@ -395,8 +481,8 @@ function Addcar({ edit }) {
                     type="file"
                     id="fvimg"
                     accept="image/*"
-                    {...register("frontview", {
-                      required: "Front View Image is required",
+                    {...register("front_view_image", {
+                      required: edit ? false : "Front View Image is required",
                     })}
                   />
                 </div>
@@ -405,13 +491,13 @@ function Addcar({ edit }) {
                   {edit ? (
                     <div className="mb-4 d-flex justify-content-center">
                       <img
-                        src={data.rear_left_view_image}
+                        src={baseapiurl + "/" + data.rear_left_view_image}
                         alt="example placeholder"
                         style={{ width: "300px" }}
                       />
                     </div>
                   ) : null}
-                  <label for="rlvimg" className="form-label">
+                  <label htmlFor="rlvimg" className="form-label">
                     Rear Left View Image
                   </label>
                   <input
@@ -419,8 +505,10 @@ function Addcar({ edit }) {
                     type="file"
                     accept="image/*"
                     id="rlvimg"
-                    {...register("rearleftview", {
-                      required: "Rear Left View Image is required",
+                    {...register("rear_left_view_image", {
+                      required: edit
+                        ? false
+                        : "Rear Left View Image is required",
                     })}
                   />
                 </div>
@@ -429,13 +517,13 @@ function Addcar({ edit }) {
                   {edit ? (
                     <div className="mb-4 d-flex justify-content-center">
                       <img
-                        src={data.rear_view_image}
+                        src={baseapiurl + "/" + data.rear_view_image}
                         alt="example placeholder"
                         style={{ width: "300px" }}
                       />
                     </div>
                   ) : null}
-                  <label for="rvimg" className="form-label">
+                  <label htmlFor="rvimg" className="form-label">
                     Rear View Image
                   </label>
                   <input
@@ -443,8 +531,8 @@ function Addcar({ edit }) {
                     type="file"
                     id="rvimg"
                     accept="image/*"
-                    {...register("rearview", {
-                      required: "Rear  View Image is required",
+                    {...register("rear_view_image", {
+                      required: edit ? false : "Rear  View Image is required",
                     })}
                   />
                 </div>
@@ -453,13 +541,13 @@ function Addcar({ edit }) {
                   {edit ? (
                     <div className="mb-4 d-flex justify-content-center">
                       <img
-                        src={data.pucc_image}
+                        src={baseapiurl + "/" + data.pucc_image}
                         alt="example placeholder"
                         style={{ width: "300px" }}
                       />
                     </div>
                   ) : null}
-                  <label for="pucc" className="form-label">
+                  <label htmlFor="pucc" className="form-label">
                     Pucc
                   </label>
                   <input
@@ -467,8 +555,8 @@ function Addcar({ edit }) {
                     type="file"
                     id="pucc"
                     accept="image/*"
-                    {...register("pucc", {
-                      required: "Pucc Image is required",
+                    {...register("pucc_image", {
+                      required: edit ? false : "Pucc Image is required",
                     })}
                   />
                 </div>

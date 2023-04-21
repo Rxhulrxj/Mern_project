@@ -1,10 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import HeaderComponent from "../../components/header-component/header";
 import { useSelector } from "react-redux";
 import Footer from "../../components/footer-component/footer";
+import axios from "axios";
+import { baseapiurl } from "../../common/api";
+import moment from "moment";
 
 function UserEnquiry() {
   const { userData } = useSelector((state) => state.MainApp);
+  const [enqdata, setEnqData] = useState([]);
+  const [sellerdata, setSellerData] = useState([]);
+  const getEnquires = async () => {
+    await axios
+      .post(`${baseapiurl}/enquiry/get-enq`, {
+        token: userData.token,
+      })
+      .then((result) => {
+        setEnqData(result.data.response);
+      });
+  };
+  const getSellerList = async () => {
+    await axios
+      .post(`${baseapiurl}/sellers/usersellerlist`, {
+        token: userData.token,
+      })
+      .then((result) => {
+        setSellerData(result.data.response);
+      });
+  };
+  useEffect(() => {
+    getEnquires();
+    getSellerList();
+  }, []);
   return (
     <>
       <HeaderComponent userData={userData} />
@@ -13,7 +40,7 @@ function UserEnquiry() {
           <div className="row mt-5" style={{ marginLeft: "14px" }}>
             <div className="col-sm-6">
               <div className="row  h3" style={{ marginLeft: "10px" }}>
-                Hello Rahul,
+                Hello {userData.name},
               </div>
               <div className="card ">
                 <div className="row card-body">
@@ -75,68 +102,77 @@ function UserEnquiry() {
               aria-labelledby="nav-home-tab"
               tabIndex="0"
             >
-              <div className="row">
-                <div className="col-sm-8">
-                  <div className="card mt-4">
-                    <div
-                      className="row card-body"
-                      style={{ flexDirection: "row" }}
-                    >
-                      <div className="col-sm-8">
-                        <div className="row">
-                          <div className="col-4">
-                            <h5 className="card-title">BMW X1</h5>
-                          </div>
-                          <div className="col-4">
-                            <div className="card-inner-box">
-                              <span>
-                                <img src="gear-shift.png" width="30" />
-                                AUTOMATIC
-                              </span>
+              {enqdata.length == 0 ? <div className="d-flex justify-content-center align-items-center" style={{height:"200px"}}>
+                <h4>No Enquires Found</h4>
+              </div>:(
+              enqdata && enqdata.map((data, index) => (
+                <div className="row" key={index}>
+                  <div className="col-sm-8">
+                    <div className="card mt-4">
+                      <div
+                        className="row card-body"
+                        style={{ flexDirection: "row" }}
+                      >
+                        <div className="col-sm-8">
+                          <div className="row">
+                            <div className="col-4">
+                              <h5 className="card-title">{data.manufacture_name + " "+data.model_name}</h5>
+                            </div>
+                            <div className="col-4">
+                              <div className="card-inner-box">
+                                <span>
+                                  <img src="gear-shift.png" width="30" />
+                                  {data.transmission.toUpperCase()}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="col-4">
+                              <div className="card-inner-box">
+                                <span>
+                                  <img
+                                    src="fuel-pump.png"
+                                    alt="fuel icon"
+                                    width="25"
+                                  />
+                                  {data.fuel_type.toUpperCase()}
+                                </span>
+                              </div>
                             </div>
                           </div>
-                          <div className="col-4">
-                            <div className="card-inner-box">
-                              <span>
-                                <img
-                                  src="fuel-pump.png"
-                                  alt="fuel icon"
-                                  width="25"
-                                />
-                                Diesel
-                              </span>
+                          <div className="row mt-3">
+                            <div className="col fw-bold text-uppercase">
+                              Enqiured date:
+                            </div>
+                            <div className="col">{moment(data.Enquiry_created).format("DD-MM-YYYY")}</div>
+                            <div className="col fw-bold text-uppercase text-nowrap">
+                              Enquired handle by:
+                            </div>
+                            <div className="col">{data.employee_name.toUpperCase()}</div>
+                          </div>
+                          <div className="row mt-3">
+                            <div className="col fw-bold text-uppercase">
+                              <p>
+                                <span className="me-3">Current Status:</span>
+                                <button
+                                  type="button"
+                                  className={`btn text-uppercase ${data.Current_Status == "Processing"? 'btn-primary':data.Current_Status == "Cancelled"? 'btn-danger': 'btn-success'}`}
+                                >
+                                  {data.Current_Status.toUpperCase()}
+                                </button>
+                              </p>
                             </div>
                           </div>
                         </div>
-                        <div className="row mt-3">
-                          <div className="col fw-bold text-uppercase">
-                            Enqiured date:
-                          </div>
-                          <div className="col">23-03-2023</div>
-                          <div className="col fw-bold text-uppercase text-nowrap">
-                            Enquired handle by:
-                          </div>
-                          <div className="col">varsha</div>
-                        </div>
-                        <div className="row mt-3">
-                          <div className="col fw-bold text-uppercase">
-                            <p>
-                              <span className="me-3">Current Status:</span>
-                              <button
-                                type="button"
-                                className="btn btn-primary text-uppercase"
-                              >
-                                In progress
-                              </button>
-                            </p>
-                          </div>
-                        </div>
+                        <img
+                          className="col-sm-4"
+                          src={baseapiurl+ "/" + data.thumbnail}
+                          alt="sans"
+                        />
                       </div>
-                      <img className="col-sm-4" src="suvcar1.png" alt="sans" />
                     </div>
                   </div>
                 </div>
-              </div>
+              )))}
             </div>
             <div
               className="tab-pane fade"
@@ -145,7 +181,10 @@ function UserEnquiry() {
               aria-labelledby="nav-profile-tab"
               tabIndex="0"
             >
-              <div className="row">
+              {sellerdata.length == 0 ? <div className="d-flex justify-content-center align-items-center" style={{height:"200px"}}>
+                <h4>No Enquires Found</h4>
+              </div>:(
+              sellerdata.map((data)=><div className="row">
                 <div className="col-sm-8">
                   <div className="card mt-4">
                     <div
@@ -155,13 +194,13 @@ function UserEnquiry() {
                       <div className="col-sm-8">
                         <div className="row">
                           <div className="col-4">
-                            <h5 className="card-title">BMW X1</h5>
+                            <h5 className="card-title">{data.Manufacturename.toUpperCase() + " " + data.ModelName.toUpperCase()}</h5>
                           </div>
                           <div className="col-4">
                             <div className="card-inner-box">
                               <span>
                                 <img src="gear-shift.png" width="30" />
-                                AUTOMATIC
+                                {data.transmission.toUpperCase()}
                               </span>
                             </div>
                           </div>
@@ -173,7 +212,7 @@ function UserEnquiry() {
                                   alt="fuel icon"
                                   width="25"
                                 />
-                                Diesel
+                                {data.fuelType.toUpperCase()}
                               </span>
                             </div>
                           </div>
@@ -182,11 +221,11 @@ function UserEnquiry() {
                           <div className="col fw-bold text-uppercase">
                             Enqiured date:
                           </div>
-                          <div className="col">23-03-2023</div>
+                          <div className="col">{moment(data.created_date).format("DD-MM-YYYY")}</div>
                           <div className="col fw-bold text-uppercase text-nowrap">
                             Enquired handle by:
                           </div>
-                          <div className="col">varsha</div>
+                          <div className="col">{data.employee_name}</div>
                         </div>
                         <div className="row mt-3">
                           <div className="col fw-bold text-uppercase">
@@ -194,19 +233,19 @@ function UserEnquiry() {
                               <span className="me-3">Current Status:</span>
                               <button
                                 type="button"
-                                className="btn btn-primary text-uppercase"
+                                className={`btn ${data.current_status == "Processing"? 'btn-primary':data.current_status == "Cancelled"? 'btn-danger': 'btn-success'} text-uppercase`}
                               >
-                                In progress
+                                {data.current_status.toUpperCase()}
                               </button>
                             </p>
                           </div>
                         </div>
                       </div>
-                      <img className="col-sm-4" src="suvcar1.png" alt="sans" />
+                      <img className="col-sm-4" src={baseapiurl+"/"+ data.left_view} alt="sans" />
                     </div>
                   </div>
                 </div>
-              </div>
+              </div>))}
             </div>
           </div>
         </div>

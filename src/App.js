@@ -11,6 +11,7 @@ import Employee from "./pages/Employee/Employee";
 import UserEnquiry from "./pages/UserEnquiry/userEnquiry";
 import Userupload from "./pages/user-upload/userupload";
 import Carlist from "./pages/car-list/carlist";
+import CarlistSearched from "./pages/car-list/car_list_searched";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/myenquiry" element={<UserEnquiry />} />
         <Route path="/sellcars" element={<Userupload />} />
         <Route path="/carlist" element={<Carlist />} />
+        <Route path="/customsearchedcarlist/" element={<CarlistSearched />} />
       </Routes>
     </Router>
   );

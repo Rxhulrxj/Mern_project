@@ -1,13 +1,19 @@
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { deleteUserData } from "../../reducers/reducer";
+import { useEffect } from "react";
+import axios from "axios";
+import { baseapiurl } from "../../common/api";
 
 function HeaderComponent({ userData }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
   const logout = () => {
     dispatch(deleteUserData());
+    navigate("/")
   };
-  console.log(userData);
+
   return (
     <div>
       <nav className="navbar navbar-expand-sm navbar-light bg-light">
@@ -41,13 +47,16 @@ function HeaderComponent({ userData }) {
                   Buy
                 </a>
               </li>
-              {/* {userData.isStaff == "False" && userData.isAdmin == "False" ? ( */}
-              <li className="nav-item">
-                <Link to={"/sellcars"} className="nav-link active">
-                  Sell
-                </Link>
-              </li>
-              {/* ) : null} */}
+              {userData.isStaff == "False" && userData.isAdmin == "False" ? (
+              Object.keys(userData).length && userData.isVerified != 'True'? null : (
+               <li className="nav-item">
+               <Link to={"/sellcars"} className="nav-link active" >
+                 Sell
+               </Link>
+             </li>
+              )
+              
+               ) : null} 
               {Object.keys(userData).length ? null : (
                 <li className="nav-item">
                   <Link className="nav-link active" to="/login">
@@ -80,17 +89,17 @@ function HeaderComponent({ userData }) {
                     ) : null}
                     {userData.isStaff == "True" ? (
                       <li>
-                        <a className="dropdown-item" href="#">
+                        <Link className="dropdown-item" to={"/employee/"}>
                           Employee Dashboard
-                        </a>
+                        </Link>
                       </li>
                     ) : null}
                     {userData.isStaff == "False" &&
                     userData.isAdmin == "False" ? (
                       <li>
-                        <a className="dropdown-item" href="#">
+                        <Link className="dropdown-item" to={`/myenquiry`}>
                           My Enquires
-                        </a>
+                        </Link>
                       </li>
                     ) : null}
                     <li>

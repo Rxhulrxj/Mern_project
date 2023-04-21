@@ -1,8 +1,27 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { enquires } from "../../../dummydata/datas";
+// import { enquires } from "../../../dummydata/datas";
+import { useSelector } from "react-redux";
+import { baseapiurl } from "../../../common/api";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "../../loader/loader";
+import moment from "moment";
 
 function EnquiresEmployee() {
+  const { userData } = useSelector((state) => state.MainApp);
+  const getEnq = async () => {
+    const { data } = await axios.post(`${baseapiurl}/enquiry/list-enq`,{
+      token:userData.token
+    });
+
+    return data;
+  };
+  const { data, error, isLoading } = useQuery(["getEnq"], getEnq, {
+    enabled: true,
+  });
+
+  if (isLoading || error) return <Loader />;
   return (
     <div className="admin-main-div">
       <div className="container-fluid">
@@ -30,29 +49,29 @@ function EnquiresEmployee() {
                 </tr>
               </thead>
               <tbody>
-                {enquires.map((data, index) => (
-                  <tr key={data.id}>
+                {data.response.map((data, index) => (
+                  <tr key={index}>
                     <th scope="row">{index + 1}</th>
-                    <td>{data.Full_Name}</td>
+                    <td>{data.manufacture_name +" "+ data.model_name}</td>
                     <td>{data.test_drive_date}</td>
-                    <td>{data.assigned_to}</td>
-                    <td>{data.enquired_date}</td>
+                    <td>{data.employee_name}</td>
+                    <td>{moment(data.Enquiry_created).format("DD-MM-YYYY")}</td>
                     <td>{data.license_no}</td>
                     <td>
                       <span
                         className={`btn ${
-                          data.current_status.toLowerCase() == "purchased" ||
-                          data.current_status.toLowerCase() == "completed"
+                          data.Current_Status.toLowerCase() == "purchased" ||
+                          data.Current_Status.toLowerCase() == "completed"
                             ? "btn-success"
                             : "btn-info"
                         } cancelled`}
                       >
-                        {data.current_status}
+                        {data.Current_Status}
                       </span>
                     </td>
                     <td>
                       <Link
-                        to={`/employee/enquires/${data.id}`}
+                        to={`/employee/enquires/${index +1}`}
                         className="btn btn-warning btn-view"
                         state={data}
                       >

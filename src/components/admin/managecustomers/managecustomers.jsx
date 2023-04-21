@@ -26,7 +26,7 @@ function Managecustomers() {
     <div className="admin-main-div">
       <div className="container-fluid">
         <h2 className="mt-5">
-          Customers <span></span>
+           <span>Customers</span>
         </h2>
 
         <div className="table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl">

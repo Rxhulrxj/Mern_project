@@ -1,8 +1,26 @@
 import React from "react";
-
 import { sellenquires } from "../../../dummydata/datas";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { baseapiurl } from "../../../common/api";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "../../loader/loader"
+import moment from "moment";
 function Sellers() {
+  const { userData } = useSelector((state) => state.MainApp);
+  const getSelllead = async () => {
+    const { data } = await axios.post(`${baseapiurl}/sellers/listsellleadstaff`,{
+      token:userData.token
+    });
+
+    return data;
+  };
+  const { data, error, isLoading } = useQuery(["getSelllead"], getSelllead, {
+    enabled: true,
+  });
+
+  if (isLoading || error) return <Loader />;
   return (
     <div className="admin-main-div">
       <div className="container mt-4 mb-2">
@@ -28,35 +46,36 @@ function Sellers() {
               </tr>
             </thead>
             <tbody>
-              {sellenquires.map((data, index) => (
+              {data.response.map((data, index) => (
                 <tr>
                   <th scope="row">{index + 1}</th>
-                  <td>{data.model_name}</td>
+                  <td>{data.ModelName}</td>
                   <td>{data.vehicle_registration_number}</td>
-                  <td>{data.manufacture_name}</td>
-                  <td>{data.model_year}</td>
-                  <td>{data.created_date}</td>
+                  <td>{data.Manufacturename}</td>
+                  <td>{data.modelyear}</td>
+                  <td>{moment(data.created_date).format("DD-MM-YYYY")}</td>
                   <td>
                     <span
                       className={`btn ${
-                        data.status.toLowerCase() == "completed" ||
-                        data.status.toLowerCase() == "purchased"
+                        data.current_status.toLowerCase() == "completed" ||
+                        data.current_status.toLowerCase() == "purchased"
                           ? "btn-success"
-                          : data.status.toLowerCase() == "processing"
+                          : data.current_status.toLowerCase() == "processing"
                           ? "btn-info"
                           : "btn-danger"
                       }`}
                     >
-                      {data.status.toUpperCase()}
+                      {data.current_status.toUpperCase()}
                     </span>
                   </td>
                   <td>
+                  
                     <Link
                       to={`/employee/seller/${data.id}`}
                       state={data}
                       className="btn btn-warning"
                     >
-                      Edit
+                     {data.current_status == "Completed" || data.current_status == "Purchased" || data.current_status == "Cancelled" ?  'View':'Edit'}
                     </Link>
                   </td>
                 </tr>
