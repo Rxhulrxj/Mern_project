@@ -4,7 +4,7 @@ import HeaderComponent from "../../components/header-component/header";
 import Footer from "../../components/footer-component/footer";
 import "react-image-gallery/styles/css/image-gallery.css";
 import ImageGallery from "react-image-gallery";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { baseapiurl } from "../../common/api";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -19,6 +19,7 @@ function Detailpage() {
   const [timeslot, setTimeSlot] = useState("");
   const [customerr, setCustomerr] = useState("");
   const location = useLocation();
+  const navigate = useNavigate()
   const data = location.state;
   var closeModalRef = React.createRef();
   const images = [
@@ -122,6 +123,15 @@ function Detailpage() {
     setTestDriveDate("");
     setTimeSlot("");
   }
+  const navlog = () =>{
+    navigate('/login')
+  }
+  const loginnavigate = () =>{
+    toast.info("Please Login to Book a Test Drive")
+    setTimeout(navlog, 4000)
+
+    
+  }
   return (
     <div>
       <HeaderComponent userData={userData} />
@@ -189,13 +199,32 @@ function Detailpage() {
                 </a>
               </div>
               <div className="col">
+              {userData && userData.isStaff == "False" && userData.isAdmin == "False" ? (
+                
+              Object.keys(userData).length ? (
+                
                 <button
-                  className="btn btn-warning  w-100 "
-                  data-bs-toggle="modal"
-                  data-bs-target="#booktestdrivemodal"
-                >
-                  Book a test Drive Now
-                </button>
+                className="btn btn-warning  w-100 "
+                data-bs-toggle="modal"
+                data-bs-target="#booktestdrivemodal"
+              >
+                
+                Book a test Drive Now
+              </button>
+              ):<button
+              className="btn btn-warning  w-100 "  
+              onClick={loginnavigate}
+            >
+              Book a test Drive Now
+            </button>
+              
+               ) : <button
+               className="btn btn-warning  w-100 "  
+               onClick={loginnavigate}
+             >
+               Book a test Drive Now
+             </button>} 
+                
                 <div
                   className="modal fade"
                   id="booktestdrivemodal"

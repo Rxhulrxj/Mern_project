@@ -218,8 +218,7 @@ function Carlist() {
       </div>
       <br />
       <br />
-      <br />
-      {console.log(searcheddata)}             
+      <br />           
       {searcheddata.length == 0 ? <div className="d-flex justify-content-center align-items-center">No Vehicles Found</div>:
        searcheddata && searcheddata.map((data,index)=>
       <div key={index}>

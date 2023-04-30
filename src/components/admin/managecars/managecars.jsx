@@ -8,12 +8,16 @@ import { useQuery } from "@tanstack/react-query";
 import Loader from "../../loader/loader";
 
 function Managecars() {
+  const { userData } = useSelector((state) => state.MainApp);
   const getVehicleData = async () => {
-    const { data } = await axios.get(`${baseapiurl}/vehicle/getVehicle`);
+    
+    const { data } = await axios.post(`${baseapiurl}/vehicle/getAllVehicle`, {
+      token: userData.token,
+    });
 
     return data;
   };
-  const { data, error, isLoading } = useQuery(["getVehicle"], getVehicleData, {
+  const { data, error, isLoading } = useQuery(["getAllVehicle"], getVehicleData, {
     enabled: true,
   });
 
@@ -56,7 +60,7 @@ function Managecars() {
                   <td>{data.vehicle_registration_number}</td>
                   <td>{data.manufacture_name}</td>
                   <td>{data.model_year}</td>
-                  <td>{data.published}</td>
+                  <td>{data.published.toUpperCase()}</td>
                   <td>
                     <Link
                       to={`/admin/cars/edit/${data.id}`}

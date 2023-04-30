@@ -54,9 +54,7 @@ function Userupload() {
         key == "left_view"
       ) { 
           formData.append(key, value[0]);    
-      } else if (key == "model_year") {
-        formData.append(key, moment(value).format("YYYY"));
-      } else {
+      }  else {
         formData.append(key, value);
       }
     }
