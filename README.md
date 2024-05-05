@@ -1,3 +1,5 @@
+Figma Url - [Figma](https://www.figma.com/file/nSqbFcXVGwJETpaTgrLX6l/Used-Cars?type=design&node-id=0%3A1&mode=design&t=d6JWpAbRkPATeVd8-1)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
